@@ -1,7 +1,7 @@
 import { S3Client, CreateBucketCommand, ListBucketsCommand } from "@aws-sdk/client-s3";
 
 
-async function CreateBucket(client: S3Client) {
+export async function CreateBucket(client: S3Client) {
   const BUCKET_NAME = `default-bucket-${Date.now()}`;
   try {
     const bucketConfig = {
@@ -19,7 +19,7 @@ async function CreateBucket(client: S3Client) {
   }
 }
 
-async function ListBuckets(client: S3Client) {
+export async function ListBuckets(client: S3Client) {
   const listCommand = new ListBucketsCommand({});
   const buckets = await client.send(listCommand);
   if (!buckets.Buckets) {
@@ -28,7 +28,7 @@ async function ListBuckets(client: S3Client) {
   }
 
   buckets.Buckets.forEach(b => {
-    console.log(b.Name)
+    console.log(b.Name, " ", b.BucketArn)
   });
 
   return buckets.Buckets
