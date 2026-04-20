@@ -2,7 +2,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { Bucket, S3Client } from '@aws-sdk/client-s3';
 import express from 'express'
 import './dynamo'
-import { ListBuckets } from './s3';
+import { CreateBucket, ListBuckets } from './s3';
 
 const app = express()
 
@@ -23,14 +23,22 @@ app.get('/', (req, res) => {
 app.get('/s3/list', async (req, res) => {
   try {
     const buckets = await ListBuckets(S3client)
-    res.json({ buckets: buckets })
+    res.status(200).json({ buckets: buckets })
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Failed to list buckets' })
   }
 })
 
-app.get('/s3/create', (req, res) => {
+app.get('/s3/create', async (req, res) => {
+  try {
+    const output = await CreateBucket(S3client)
+    console.dir(output)
+    res.status(200).json(output)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Error While creating bucket" })
+  }
   console.log(new Date(Date.now()).toISOString(), "Incoming request from ", req.ip, "for ", req.path)
 })
 

@@ -8,10 +8,10 @@ export async function CreateBucket(client: S3Client) {
       Bucket: BUCKET_NAME,
     };
     const createCommand = new CreateBucketCommand(bucketConfig);
-    await client.send(createCommand);
+    const cmdOutput = await client.send(createCommand);
     console.log(`Bucket "${BUCKET_NAME}" creado exitosamente.`);
 
-    return `Bucket "${BUCKET_NAME}" creado exitosamente.`
+    return cmdOutput
 
   } catch (err) {
     console.error(err);
