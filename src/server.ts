@@ -20,24 +20,21 @@ app.get('/', (req, res) => {
   console.log(new Date(Date.now()).toISOString(), "Incoming request from ", req.ip, "for ", req.path)
 })
 
-app.get('/s3/list', (req, res) => {
-  var buckets: Promise<Bucket[]>
+app.get('/s3/list', async (req, res) => {
   try {
-    buckets = ListBuckets(S3client)
+    const buckets = await ListBuckets(S3client)
     res.json({ buckets: buckets })
   } catch (error) {
     console.error(error)
-    //TODO: Handle error
+    res.status(500).json({ error: 'Failed to list buckets' })
   }
-
-  console.log(new Date(Date.now()).toISOString(), "Incoming request from ", req.ip, "for ", req.path)
 })
 
 app.get('/s3/create', (req, res) => {
   console.log(new Date(Date.now()).toISOString(), "Incoming request from ", req.ip, "for ", req.path)
 })
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Running on PORT ${PORT}`);
 })
 
