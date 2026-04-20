@@ -1,0 +1,34 @@
+{
+  "name": "webadmin",
+  "version": "0.0.1",
+  "description": "",
+  "homepage": "https://github.com/indigogal/webAdmin#readme",
+  "bugs": {
+    "url": "https://github.com/indigogal/webAdmin/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/indigogal/webAdmin.git"
+  },
+  "license": "Unlicense",
+  "author": "",
+  "type": "module",
+  "main": "src/server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx tsx --watch src/server.ts ",
+    "build:css": "npx @tailwindcss/cli -i css/input.css -o public/output.css"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1032.0",
+    "@tailwindcss/cli": "^4.2.2",
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "daisyui": "^5.5.19",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "tailwindcss": "^4.2.2",
+    "tsx": "^4.21.0"
+  }
+}
