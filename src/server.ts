@@ -1,6 +1,7 @@
 import express from 'express'
 const app = express()
 
+const REGION = "us-east-1";
 const PORT = 5000;
 
 app.set('view engine', 'ejs')

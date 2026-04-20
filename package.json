@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1032.0",
+    "@aws-sdk/client-s3": "^3.1032.0",
     "@tailwindcss/cli": "^4.2.2",
     "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.6",
