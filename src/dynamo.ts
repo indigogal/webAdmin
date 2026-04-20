@@ -1,26 +1,17 @@
 import { DynamoDBClient, ListTablesCommand, CreateTableCommand } from "@aws-sdk/client-dynamodb";
-import type { CreateTableInput } from "@aws-sdk/client-dynamodb";
 
-async function ListTables(client: DynamoDBClient) {
-  try {
-    const data = await client.send(new ListTablesCommand({}))
-    console.log("Tables: ", data.TableNames)
-    return data.TableNames
-  } catch (err) {
-    console.error(err)
-    return err
-  }
+export async function ListTables(client: DynamoDBClient) {
+  const data = await client.send(new ListTablesCommand({}))
+  console.dir("Tables: ", data.TableNames)
+  return data.TableNames
 }
 
-async function CreateTable(client: DynamoDBClient) {
-  try {
-    const input: CreateTableInput = {
-      // TODO: Fix
-      TableName: "",
-    }
-    const data = await client.send(new CreateTableCommand(input))
-  } catch (err) {
-    console.error(err)
-    return err
-  }
+export async function CreateTable(client: DynamoDBClient) {
+  const data = await client.send(new CreateTableCommand({
+    TableName: `tabla-dynamo-${Date.now()}`,
+    KeySchema: [{ AttributeName: "id", KeyType: "HASH" }, { AttributeName: "content", KeyType: "HASH" }],
+    AttributeDefinitions: [{ AttributeName: "id", AttributeType: "S" }, { AttributeName: "content", AttributeType: "S" }],
+    BillingMode: "PAY_PER_REQUEST",
+  }));
+  return data
 }
