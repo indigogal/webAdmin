@@ -2,21 +2,17 @@ import { S3Client, CreateBucketCommand, ListBucketsCommand } from "@aws-sdk/clie
 
 
 export async function CreateBucket(client: S3Client) {
-  const BUCKET_NAME = `default-bucket-${Date.now()}`;
-  try {
-    const bucketConfig = {
-      Bucket: BUCKET_NAME,
-    };
-    const createCommand = new CreateBucketCommand(bucketConfig);
-    const cmdOutput = await client.send(createCommand);
-    console.log(`Bucket "${BUCKET_NAME}" creado exitosamente.`);
+  const BUCKET_NAME = `default-bucket-${Date.now()}`
 
-    return cmdOutput
-
-  } catch (err) {
-    console.error(err);
-    return err
+  const bucketConfig = {
+    Bucket: BUCKET_NAME,
   }
+
+  const createCommand = new CreateBucketCommand(bucketConfig)
+  const cmdOutput = await client.send(createCommand)
+  console.log(`Bucket "${BUCKET_NAME}" created successfully.`)
+
+  return cmdOutput
 }
 
 export async function ListBuckets(client: S3Client) {
