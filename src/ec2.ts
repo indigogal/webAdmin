@@ -5,12 +5,11 @@ import {
     AuthorizeSecurityGroupIngressCommandOutput,
     CreateSecurityGroupCommand, CreateSecurityGroupCommandInput,
     CreateSecurityGroupResult,
-    EC2Client, IamInstanceProfileAssociation, IamInstanceProfileSpecification,
+    EC2Client,IamInstanceProfileSpecification,
     ImportKeyPairCommand,
     ImportKeyPairCommandInput,
     ImportKeyPairCommandOutput, RunInstancesCommand, RunInstancesCommandInput, RunInstancesCommandOutput
-} from "@aws-sdk/client-ec2"; // ES Modules import
-import type { EC2ClientConfig } from "@aws-sdk/client-ec2";
+} from "@aws-sdk/client-ec2";
 import 'dotenv/config'
 
 
