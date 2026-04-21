@@ -14,11 +14,10 @@ import {
 import type { EC2ClientConfig } from "@aws-sdk/client-ec2";
 import 'dotenv/config'
 
-const config: EC2ClientConfig = {};
-const client = new EC2Client(config);
 
 /**
 Importa una llave para la creación de una instancia.
+ @param client{EC2Client} Cliente para enviar los comandos EC2.
  @param key {string} El contenido de la llave. Por defecto usa la llave SSH en el archivo de variables de entorno "SSH_KEY".
  @param name{string} El nombre asignado de la llave. Por defecto la nombra "my_key_pair"
  */
@@ -47,6 +46,7 @@ async function ImportKeyPair(key: string = process.env.SSH_KEY, name: string = "
 
 /**
  * Crea un grupo de seguridad vacío.
+ * @param client{EC2Client} Cliente para enviar los comandos EC2.
  * @param name{string} Nombre del grupo de seguridad.
  * @param description{string} Descripción del grupo de seguridad.
  */
@@ -62,6 +62,7 @@ async function CreateSecurityGroup(name: string = "my_security_group", descripti
 
 /**
  * Añade una IP a un grupo de seguridad existente.
+ * @param client{EC2Client} Cliente para enviar los comandos EC2.
  * @param groupId La ID del grupo de seguridad.
  * @param port El puerto que se desea abrir para el protocolo deseado
  * @param ip La IP a permitir. En caso de no ingresar algo, se obtiene la ip pública desde la ejecución del programa.
@@ -91,6 +92,7 @@ async function AllowIPForSG(groupId: string, port: number, ip: string = "", prot
 
 /**
  * Crea una nueva instancia EC2.
+ * @param client{EC2Client} Cliente para enviar los comandos EC2.
  * @param iamProfile{IamInstanceProfileSpecification} Especificación del perfil AMI a usar en la instancia.
  * @param instanceType{_InstanceType} Enumerador string con el tipo de instancia a usar.
  * @param keyPath{string} Nombre de la llave SSH a usar.
