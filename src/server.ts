@@ -73,7 +73,7 @@ app.get('/ec2/create', async (req, res) => {
   console.log(new Date(Date.now()).toISOString(), "Incoming request from ", req.ip, "for ", req.path)
   try {
     const output = await CreateEC2Instance(
-      { Name: "LabRole" },       // iamProfile
+      { Name: "LabInstanceProfile" },       // iamProfile
       "t2.micro" as _InstanceType,     // instanceType
       "wspem",                   // keyPath
       ["sg-08a3e0e193d933496"],                     // securityGroupIds

@@ -118,7 +118,8 @@ export async function CreateEC2Instance(iamProfile: IamInstanceProfileSpecificat
     IamInstanceProfile: iamProfile,
     KeyName: keyPath,
     InstanceType: instanceType,
-    SecurityGroups: securityGroupIds,
+    SecurityGroupIds: securityGroupIds,
+    ImageId: "ami-0b75f821522bcff85",
     TagSpecifications: [{
       'ResourceType': 'instance',
       'Tags': [{ 'Key': 'Name', 'Value': instanceName }]
