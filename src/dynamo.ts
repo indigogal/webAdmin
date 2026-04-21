@@ -9,7 +9,7 @@ export async function ListTables(client: DynamoDBClient) {
 export async function CreateTable(client: DynamoDBClient) {
   const data = await client.send(new CreateTableCommand({
     TableName: `tabla-dynamo-${Date.now()}`,
-    KeySchema: [{ AttributeName: "id", KeyType: "HASH" }, { AttributeName: "content", KeyType: "HASH" }],
+    KeySchema: [{ AttributeName: "id", KeyType: "HASH" }, { AttributeName: "content", KeyType: "RANGE" }],
     AttributeDefinitions: [{ AttributeName: "id", AttributeType: "S" }, { AttributeName: "content", AttributeType: "S" }],
     BillingMode: "PAY_PER_REQUEST",
   }));
