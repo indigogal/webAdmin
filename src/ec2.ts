@@ -21,7 +21,7 @@ Importa una llave para la creación de una instancia.
  @param key {string} El contenido de la llave. Por defecto usa la llave SSH en el archivo de variables de entorno "SSH_KEY".
  @param name{string} El nombre asignado de la llave. Por defecto la nombra "my_key_pair"
  */
-async function ImportKeyPair(key: string = process.env.SSH_KEY, name: string = "my_key_pair"): Promise<ImportKeyPairCommandOutput> {
+async function ImportKeyPair(key: string = process.env.SSH_KEY, name: string = "my_key_pair", client: EC2Client): Promise<ImportKeyPairCommandOutput> {
   const input: ImportKeyPairCommandInput = {
     TagSpecifications: [
       {
@@ -50,7 +50,7 @@ async function ImportKeyPair(key: string = process.env.SSH_KEY, name: string = "
  * @param name{string} Nombre del grupo de seguridad.
  * @param description{string} Descripción del grupo de seguridad.
  */
-async function CreateSecurityGroup(name: string = "my_security_group", description: string = ""): Promise<CreateSecurityGroupResult> {
+async function CreateSecurityGroup(name: string = "my_security_group", description: string = "", client: EC2Client): Promise<CreateSecurityGroupResult> {
   const input: CreateSecurityGroupCommandInput = {
     GroupName: name,
     Description: description,
@@ -68,7 +68,9 @@ async function CreateSecurityGroup(name: string = "my_security_group", descripti
  * @param ip La IP a permitir. En caso de no ingresar algo, se obtiene la ip pública desde la ejecución del programa.
  * @param protocol El protocolo IP a permitir. Por defecto es TCP.
  */
-async function AllowIPForSG(groupId: string, port: number, ip: string = "", protocol: string = "tcp"): Promise<AuthorizeSecurityGroupIngressCommandOutput> {
+async function AllowIPForSG(groupId: string, port: number, ip: string = "", protocol: string = "tcp",
+  client: EC2Client
+): Promise<AuthorizeSecurityGroupIngressCommandOutput> {
   if (ip == "") {
     const res: Response = await fetch("http://checkip.amazonaws.com");
     ip = (await res.text()).trim();
@@ -109,7 +111,9 @@ export async function CreateEC2Instance(iamProfile: IamInstanceProfileSpecificat
   securityGroupIds: [string],
   instanceName: string = `ec2-${Date.now()}`,
   subnetId: string,
-  userData: string): Promise<RunInstancesCommandOutput> {
+  userData: string,
+  client: EC2Client
+): Promise<RunInstancesCommandOutput> {
   const input: RunInstancesCommandInput = {
     IamInstanceProfile: iamProfile,
     KeyName: keyPath,
@@ -129,7 +133,7 @@ export async function CreateEC2Instance(iamProfile: IamInstanceProfileSpecificat
   return result;
 }
 
-export async function ListEC2Instances() {
+export async function ListEC2Instances(client: EC2Client) {
   const command = new DescribeInstancesCommand({});
   const result = await client.send(command);
   return result;

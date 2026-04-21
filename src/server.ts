@@ -4,7 +4,7 @@ import express from 'express'
 import { CreateBucket, ListBuckets } from './s3';
 import { ListTables, CreateTable } from './dynamo'
 import { ListEC2Instances, CreateEC2Instance } from './ec2.ts'
-import { _InstanceType } from '@aws-sdk/client-ec2'
+import { _InstanceType, EC2Client } from '@aws-sdk/client-ec2'
 
 const app = express()
 
@@ -13,6 +13,7 @@ const PORT = 5000;
 
 const S3client = new S3Client({ region: REGION })
 const DynamoClient = new DynamoDBClient({ region: REGION })
+const ec2Client = new EC2Client({ region: REGION })
 
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
@@ -78,7 +79,8 @@ app.get('/ec2/create', async (req, res) => {
       ["sg-08a3e0e193d933496"],                     // securityGroupIds
       `ec2-${Date.now()}`,                       // instanceName — lets the default kick in
       "subnet-036523296283797ec",                   // subnetId
-      ""                               // userData
+      "", // userData
+      ec2Client
     )
     res.status(200).json(output)
   } catch (error) {
@@ -91,7 +93,7 @@ app.get('/ec2/create', async (req, res) => {
 app.get('/ec2/list', async (req, res) => {
   console.log(new Date(Date.now()).toISOString(), "Incoming request from ", req.ip, "for ", req.path)
   try {
-    const output = await ListEC2Instances()
+    const output = await ListEC2Instances(ec2Client)
     const instances = output.Reservations?.flatMap(r => r.Instances ?? []) ?? []
     res.status(200).json({ instances })
   } catch (error) {
