@@ -1,8 +1,10 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { Bucket, S3Client } from '@aws-sdk/client-s3';
 import express from 'express'
-import './dynamo'
 import { CreateBucket, ListBuckets } from './s3';
+import { ListTables, CreateTable } from './dynamo'
+import { ListEC2Instances, CreateEC2Instance } from './ec2.ts'
+import { _InstanceType } from '@aws-sdk/client-ec2'
 
 const app = express()
 
@@ -21,6 +23,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/s3/list', async (req, res) => {
+  console.log(new Date(Date.now()).toISOString(), "Incoming request from ", req.ip, "for ", req.path)
   try {
     const buckets = await ListBuckets(S3client)
     res.status(200).json({ buckets: buckets })
@@ -31,6 +34,7 @@ app.get('/s3/list', async (req, res) => {
 })
 
 app.get('/s3/create', async (req, res) => {
+  console.log(new Date(Date.now()).toISOString(), "Incoming request from ", req.ip, "for ", req.path)
   try {
     const output = await CreateBucket(S3client)
     console.dir(output)
@@ -39,7 +43,61 @@ app.get('/s3/create', async (req, res) => {
     console.error(error)
     res.status(500).json({ error: "Error While creating bucket" })
   }
+})
+
+app.get('/dynamo/create', async (req, res) => {
   console.log(new Date(Date.now()).toISOString(), "Incoming request from ", req.ip, "for ", req.path)
+  try {
+    const output = await CreateTable(DynamoClient)
+    console.dir(output)
+    res.status(200).json({ creationOutput: output })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Error while creating table" })
+  }
+})
+
+app.get('/dynamo/list', async (req, res) => {
+  console.log(new Date(Date.now()).toISOString(), "Incoming request from ", req.ip, "for ", req.path)
+  try {
+    const tableArray = await ListTables(DynamoClient)
+    console.dir("Tables: ", tableArray)
+    res.status(200).json({ tables: tableArray })
+  } catch (error) {
+    res.status(500).json({ error: "Error while fetching tables" })
+  }
+})
+
+app.get('/ec2/create', async (req, res) => {
+  console.log(new Date(Date.now()).toISOString(), "Incoming request from ", req.ip, "for ", req.path)
+  try {
+    const output = await CreateEC2Instance(
+      { Name: "LabRole" },       // iamProfile
+      "t2.micro" as _InstanceType,     // instanceType
+      "wspem",                   // keyPath
+      ["sg-08a3e0e193d933496"],                     // securityGroupIds
+      `ec2-${Date.now()}`,                       // instanceName — lets the default kick in
+      "subnet-036523296283797ec",                   // subnetId
+      ""                               // userData
+    )
+    res.status(200).json(output)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Error while creating EC2 instance" })
+  }
+})
+
+
+app.get('/ec2/list', async (req, res) => {
+  console.log(new Date(Date.now()).toISOString(), "Incoming request from ", req.ip, "for ", req.path)
+  try {
+    const output = await ListEC2Instances()
+    const instances = output.Reservations?.flatMap(r => r.Instances ?? []) ?? []
+    res.status(200).json({ instances })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Error while listing EC2 instances" })
+  }
 })
 
 app.listen(PORT, '0.0.0.0', () => {
