@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html data-theme="retro" lang="en">
-
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,9 +53,9 @@
         <button class="btn btn-primary">Deploy App</button>
         <button class="btn btn-secondary">Restart Service</button>
         <button class="btn btn-accent">Run Health Check</button>
-        <button class="btn">Fetch Logs</button>
-        <button class="btn">Scale Up</button>
-        <button class="btn btn-error">Stop Instance</button>
+        <button class="btn">List Buckets</button>
+        <button class="btn">List DynamoDB Tables</button>
+        <button class="btn btn-error">Create DynamoDB Table</button>
       </div>
     </section>
 
@@ -80,5 +80,86 @@
   </footer>
 
 </body>
+<script>
+  const outputMain = document.querySelector('.mockup-code pre:first-child code')
+  const outputSecondary = document.querySelector('.mockup-code pre:last-child code')
 
+  function setOutput(main, secondary = "") {
+    outputMain.textContent = main
+    outputSecondary.textContent = secondary
+  }
+
+  //ADAPTADORES AXIOS
+
+  async function listBuckets() {
+    try {
+      setOutput("Ejecutando: S3 List...", "")
+      const res = await axios.get('/s3/list')
+      setOutput("Buckets obtenidos:", JSON.stringify(res.data, null, 2))
+    } catch (err) {
+      setOutput("Error", err.message)
+    }
+  }
+
+  async function createBucket() {
+    try {
+      setOutput("Creando bucket...", "")
+      const res = await axios.get('/s3/create')
+      setOutput("Bucket creado:", JSON.stringify(res.data, null, 2))
+    } catch (err) {
+      setOutput("Error", err.message)
+    }
+  }
+
+  async function listEC2() {
+    try {
+      setOutput("Listando EC2...", "")
+      const res = await axios.get('/ec2/list')
+      setOutput("Instancias:", JSON.stringify(res.data, null, 2))
+    } catch (err) {
+      setOutput("Error", err.message)
+    }
+  }
+
+  async function createEC2() {
+    try {
+      setOutput("Creando instancia EC2...", "")
+      const res = await axios.get('/ec2/create')
+      setOutput("Instancia creada:", JSON.stringify(res.data, null, 2))
+    } catch (err) {
+      setOutput("Error", err.message)
+    }
+  }
+
+  async function listDynamo() {
+    try {
+      setOutput("Listando tablas Dynamo...", "")
+      const res = await axios.get('/dynamo/list')
+      setOutput("Tablas:", JSON.stringify(res.data, null, 2))
+    } catch (err) {
+      setOutput("Error", err.message)
+    }
+  }
+
+  async function createDynamo() {
+    try {
+      setOutput("Creando tabla Dynamo...", "")
+      const res = await axios.get('/dynamo/create')
+      setOutput("Tabla creada:", JSON.stringify(res.data, null, 2))
+    } catch (err) {
+      setOutput("Error", err.message)
+    }
+  }
+
+  //EVENTOS A BOTONES
+
+  const buttons = document.querySelectorAll('button')
+
+  buttons[0].onclick = createEC2         // Deploy App
+  buttons[1].onclick = () => location.reload() // Restart (placeholder)
+  buttons[2].onclick = listEC2           // Health Check
+  buttons[3].onclick = listBuckets       // Fetch Logs
+  buttons[4].onclick = listDynamo        // List DynamoDB Tables
+  buttons[5].onclick = createDynamo      // Create DynamoDB Table
+</script>
 </html>

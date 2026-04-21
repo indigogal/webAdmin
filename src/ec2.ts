@@ -106,7 +106,7 @@ async function AllowIPForSG(groupId: string, port: number, ip: string = "", prot
  */
 
 export async function CreateEC2Instance(iamProfile: IamInstanceProfileSpecification,
-  instanceType: _InstanceType,
+  instanceType: _InstanceType = "t2.micro",
   keyPath: string,
   securityGroupIds: [string],
   instanceName: string = `ec2-${Date.now()}`,
